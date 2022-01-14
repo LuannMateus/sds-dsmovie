@@ -1,6 +1,7 @@
 import { TMovie } from 'models/Movie';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { FormEvent, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { validateEmail } from 'utils/emailValidate';
 import { http } from 'utils/http';
 import './styles.css';
 
@@ -9,6 +10,8 @@ type FormCardProps = {
 };
 
 export const FormCard = ({ movieId }: FormCardProps) => {
+  const navigate = useNavigate();
+
   const [movieState, setMovieState] = useState<TMovie>();
 
   useEffect(() => {
@@ -17,6 +20,25 @@ export const FormCard = ({ movieId }: FormCardProps) => {
       setMovieState(data);
     });
   }, [movieId]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const email = (event.target as any).email.value;
+    const score = (event.target as any).score.value;
+
+    if (!validateEmail(email)) {
+      return;
+    }
+
+    const data = {
+      email,
+      movieId,
+      score,
+    };
+
+    http.put('/scores', data).then((_) => navigate('/'));
+  };
 
   return (
     <div className="dsmovie-form-container">
@@ -27,7 +49,7 @@ export const FormCard = ({ movieId }: FormCardProps) => {
       />
       <div className="dsmovie-card-bottom-container">
         <h3>{movieState?.title}</h3>
-        <form className="dsmovie-form">
+        <form className="dsmovie-form" onSubmit={handleSubmit}>
           <div className="form-group dsmovie-form-group">
             <label htmlFor="email">Informe seu email</label>
             <input type="email" className="form-control" id="email" />
