@@ -1,10 +1,17 @@
 import { MovieCard } from 'components/MovieCard';
 import { Pagination } from 'components/Pagination';
+import { TMovie } from 'models/Movie';
+import { useEffect, useState } from 'react';
 import { http } from 'utils/http';
 
 export const Listing = () => {
-  // ! WRONG WAY
-  http.get('/movies?size=12&page=0').then((resp) => console.log(resp.data));
+  const [pageNumberState, setPageNumberState] = useState(0);
+
+  useEffect(() => {
+    http.get('/movies?size=12&page=0').then((resp) => {
+      const data = resp.data as TMovie;
+    });
+  }, []);
 
   return (
     <>
