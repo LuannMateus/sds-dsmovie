@@ -1,6 +1,6 @@
 import { MovieCard } from 'components/MovieCard';
 import { Pagination } from 'components/Pagination';
-import { TMovie, TMoviePage } from 'models/Movie';
+import { TMoviePage } from 'models/Movie';
 import { useEffect, useState } from 'react';
 import { http } from 'utils/http';
 
@@ -27,9 +27,13 @@ export const Listing = () => {
     });
   }, [pageNumberState]);
 
+  const handlePagechange = (newPageNumber: number) => {
+    setPageNumberState(newPageNumber);
+  };
+
   return (
     <>
-      <Pagination />
+      <Pagination page={pageState} onChange={handlePagechange} />
       <div className="container">
         <div className="row">
           {pageState.content.map((movie) => (
